@@ -26,7 +26,7 @@
 #>
 
 # Required Tenant ID - MODIFY THE TENANT ID!
-$tenantId = '6a22b6h3-****-*****_**********'
+$tenantId = '2ae8a6a3-21ec-4240-9791-a6ae802c9fcc'
 
 # Required KeyPath - DO NOT MODIFY OR REMOVE!
 $KeyPath = "HKLM:\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\TenantInfo\$tenantId"
@@ -55,7 +55,18 @@ function Write-Log {
 # Determine if the machine is likely Entra Joined.
 # Disable RDAgentBootLoader service to prevent users from connecting to the session host during the enrollment process
 if (Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CDJ") {
-    Write-Log "Machine seems to be Entra Joined by purpose. Skipping RDAgentBootLoader service disable action."
+    Write-Log "Machine seems to be Entra Joined by purpose. Skipping RDAgentBootLoader service disable action."ue
+
+    # Validate if the service has been started
+    while ((Get-Service -Name "RDAgentBootLoader").Status -ne "Running") {
+        Write-Log "RDAgentBootLoader service is not running or not found (yet). Retrying to start the service..."
+        Start-Sleep -Seconds 2
+        Set-Service -Name "RDAgentBootLoader" -StartupType Automatic -ErrorAction SilentlyContinue
+        Start-Sleep 2
+        Start-Service -Name "RDAgentBootLoader" -ErrorAction SilentlyContinue
+    }
+    Write-Log "RDAgentBootLoader service successfully started."
+
 } else {
     Write-Log "Machine seems to be (Hybrid) Domain Joined. Proceeding with RDAgentBootLoader service disable action."
     Start-Sleep 2
