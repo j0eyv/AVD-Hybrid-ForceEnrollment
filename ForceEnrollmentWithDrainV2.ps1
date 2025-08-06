@@ -26,7 +26,7 @@
 #>
 
 # Required Tenant ID - MODIFY THE TENANT ID!
-$tenantId = '2ae8a6a3-21ec-4240-9791-a6ae802c9fcc'
+$tenantId = '2ae8a6a3-****-****-*************'
 
 # Required KeyPath - DO NOT MODIFY OR REMOVE!
 $KeyPath = "HKLM:\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\TenantInfo\$tenantId"
@@ -211,3 +211,4 @@ if ((Test-Path $rebootPath) -and (Get-ItemProperty -Path $rebootPath -Name $rebo
         Write-Log "Retrying Entra Hybrid Join status check..."
     }
 }
+
